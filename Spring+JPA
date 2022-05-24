@@ -1,0 +1,38 @@
+
+Spring and JPA collab
+
+@PersistenceUnit
+private EntityManagerFactory emf;
+
+@PersistenceContext
+private EntityManager entityManager;
+
+Always call persist and other methods
+@PostConstruct for dependency injection to work
+
+Transaction Management in Spring+JPA+Hibernate
+@Transactional at method level
+@EnableTransactionManagement at class level
+
+As part of @Transactional you can define rollback conditions
+rollbackOn Exception.class
+dontRollebackOn MyAppException.class
+
+Transaction propagation
+
+If two methods with transaction are called, second method leverages existing transaction first method
+And if there doesnt exist a transaction, it will create a new transaction
+
+PROVIDED BY JAVA/JPA
+TxTypes
+-->Required
+-->RequiredNew
+--> Not_supported
+--> Mandatory - someone else needs to create a transaction
+
+PROVIDED BY Spring
+propagation
+    Required
+
+READ ONLY Transactions
+readOnly = true in @Transactional annotation
