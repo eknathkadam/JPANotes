@@ -1,0 +1,24 @@
+There are two types of PersistenceContexts
+
+One managed by container - typically in a Jakarta EE type application
+In Java SE application, the PeristenceContext is managed by the application.
+
+Similarly - transactions are also managed by container or the application depending upon the type of the application.
+
+
+Diference between	Transaction Synchronization, 
+			Transaction Association
+			Transaction Propagation
+
+
+JAKARTA TRANSACTIONS TRANSACTION MANAGEMENT
+Synchronization is with Persistence Context. When a transaction is commited the Persistence Context should know about it.
+The provider of transaction sends a notification so that Persistence Context can be flushed to the database.
+
+The attaching/assigning process of transaction to a persistence context is called Transaction Association
+
+Transaction propagation is the process of sharing a persistence context between multiple container-managed entity managers in a single transaction.
+
+There can be only one persistence context association with and propagated across a Jakarta Transactions transaction. All container managed entity managers in the same transaction must share the same prpagated persistence context.
+
+
