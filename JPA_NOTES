@@ -34,4 +34,15 @@ When called flush()
 -->When a found entity is changed it becomes Dirty, calling refresh() will clean a dirty entity. The managed entity then reflects the state as it is in corrosponding row in the db table
 
 
+MappedBy needs to be annotated on the non-owning side of the relationship
+
+
+INHERITANCE
+@Intheritance (strategy = InteritanceType.SINGLE.TABLE) JOINED, TABLE_PER_CLASS
+@Discriminator (name = "EmployeeType)
+@MappedSuperClass and @Entity do not go together
+
+
+
+
 
