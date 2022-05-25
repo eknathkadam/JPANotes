@@ -1,0 +1,15 @@
+.find (Employee.class, 30) Finds an Employee Object with ID 30
+.getRefererence (Department.class, 30) Finds a Department object without fetching all its data
+    - a proxy object is used
+    - You must be sure that the object exisits otherwise EntityNotFoundException will be thrown
+    - Use only for performance reasons
+.remove()
+    - If there is a one to one relationship, explicitly set the related entity null
+    - Example: 
+        Employee emp = em.find(Employee.class, empId);
+        ParkingSpace ps = emp.getParkingSpace();
+        emp.setParkingSpace(null);
+        em.remove(ps);
+    - Relationship maintenance is the responsibility of the application. 
+    - An entity can be removed only if it is managed by a persistence context. This means that a transaction-scoped entity manager can be used to remove an entity only if there is an active transaction. Attempting to invoke remove() when there is no transaction will result in a TransactionRequiredException exception. Like the persist() operation described earlier, application-managed and extended entity managers can remove an entity outside of a transaction, but the change will not take place in the database until a transaction, with which the persistence context is synchronized, is committed.
+    

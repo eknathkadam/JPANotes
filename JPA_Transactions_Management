@@ -21,4 +21,6 @@ Transaction propagation is the process of sharing a persistence context between 
 
 There can be only one persistence context association with and propagated across a Jakarta Transactions transaction. All container managed entity managers in the same transaction must share the same prpagated persistence context.
 
+An entity can be removed only if it is managed by a persistence context. This means that a transaction-scoped entity manager can be used to remove an entity only if there is an active transaction. Attempting to invoke remove() when there is no transaction will result in a TransactionRequiredException exception. Like the persist() operation described earlier, application-managed and extended entity managers can remove an entity outside of a transaction, but the change will not take place in the database until a transaction, with which the persistence context is synchronized, is committed.
+
 

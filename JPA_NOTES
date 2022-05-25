@@ -28,10 +28,101 @@ If called persist again
 When called flush()
 	-->Managed -->Forced Write in DB
  -->detach removes the entity from managed
+	-An entity becomes detached if clear() or detach() or rollback() methods are called.
+	- An entity can also become detached the persistence context is closed or no longer exists.
 -->Merge() will make a detached entity as managed 
 -->Clear() works similar to detach but for all the managed entities instead of one entity
 
 -->When a found entity is changed it becomes Dirty, calling refresh() will clean a dirty entity. The managed entity then reflects the state as it is in corrosponding row in the db table
+
+
+CASCADING
+
+By default, every entity manager operation applies only to the entity supplied as an argument to the operation. The operation will not cascade to other entities that have
+a relationship with the entity that is being operated on. For some operations, such as remove(), this is usually the desired behavior.
+
+Entity manager operations are identified using the CascadeType enumerated type when listed as part of the cascade attribute. The PERSIST, REFRESH, REMOVE, MERGE, and DETACH constants pertain to the entity manager operation of the same name. The constant ALL is shorthand for declaring that all five operations should be cascaded. By default, relationships have an empty cascade set.
+
+Enabling Cascade Persist. When Employee is saved, address is also saved.
+@Entity
+public class Employee {
+    // ...
+    @ManyToOne(cascade=CascadeType.PERSIST)
+    Address address;
+    // ...
+}
+
+There are really only two cases in which cascading the remove() operation makes sense, one-to-one and one-to-many relationships, in which there is a clear parent-child relationship.
+Enabling Cascade Remove
+@Entity
+public class Employee {
+    // ...
+    @OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    ParkingSpace parkingSpace;
+    @OneToMany(mappedBy="employee",
+               cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+    Collection<Phone> phones;
+// ... }
+
+
+When merging and an Entity is important to get the merged entity from peristence context as the the entity returned is managed.
+Returning a managed instance other than the original entity is a critical part of the merge process.
+
+public void updateEmployee(Employee emp) {
+    Employee managedEmp = em.merge(emp);
+    managedEmp.setLastAccessTime(new Date());
+}
+When merge() is invoked on a new entity, it behaves similarly to the persist() operation. 
+
+Employee Entity with Merge Cascade Setting
+@Entity
+public class Employee {
+    @Id private int id;
+    private String name;
+    private long salary;
+    @ManyToOne(cascade=CascadeType.MERGE)
+    private Address address;
+    @ManyToOne
+    private Department department;
+    @OneToMany(mappedBy="employee", cascade=CascadeType.MERGE)
+    private Collection<Phone> phones;
+    // ...
+}
+
+Caution: native sQL UPDATE and DELETE operations should not be executed on tables mapped by an entity. the Jakarta persistence QL operations tell the provider what cached entity state must be invalidated in order to remain consistent with the database. native sQL operations bypass such checks and can quickly lead to situations where the in-memory cache is out of date with respect to the database.
+
+
+This method accepts an entity type as a parameter and adds a new root to the query. A root in a criteria query corresponds to an identification variable in Jakarta Persistence QL, which in turn corresponds to a range variable declaration or join expression. In Listing 9-2, we used the following code to obtain our query root:
+CriteriaQuery<Employee> c = cb.createQuery(Employee.class);
+Root<Employee> emp = c.from(Employee.class);
+The from() method returns an instance of Root corresponding to the entity type.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Cascade settings are unidirectional. This means that they must be explicitly set on both sides of a relationship if the same behavior is intended for both situations.
+
+
+
+
+
+
+
 
 
 MappedBy needs to be annotated on the non-owning side of the relationship
